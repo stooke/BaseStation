@@ -6,6 +6,8 @@
  */
 
 #include <Arduino.h>
+
+#include "Config.h"
 #include "CommInterfaceSerial.h"
 #include "SerialCommand.h"
 
@@ -15,8 +17,8 @@ HardwareSerialInterface::HardwareSerialInterface(HardwareSerial &serial, long ba
 }
 
 void HardwareSerialInterface::process() {
-	while(Serial.available()) {
-		char ch = Serial.read();
+	while(serialStream.available()) {
+		char ch = serialStream.read();
 		if (ch == '<') {
 			inCommandPayload = true;
 			buffer = "";
@@ -31,8 +33,8 @@ void HardwareSerialInterface::process() {
 }
 
 void HardwareSerialInterface::showConfiguration() {
-	Serial.print("Hardware Serial - Speed:");
-	Serial.println(baud);
+	DEBUG_INTERFACE.print("Hardware Serial - Speed:");
+	DEBUG_INTERFACE.println(baud);
 }
 
 void HardwareSerialInterface::showInitInfo() {
@@ -40,5 +42,5 @@ void HardwareSerialInterface::showInitInfo() {
 }
 
 void HardwareSerialInterface::send(const char *buf) {
-	Serial.print(buf);
+	serialStream.print(buf);
 }

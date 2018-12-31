@@ -6,6 +6,7 @@
  */
 
 #include <Arduino.h>
+
 #include "DCCpp.h"
 #include "CommInterface.h"
 #include "CommInterfaceEthernet.h"
@@ -51,17 +52,17 @@ void EthernetInterface::process() {
 }
 
 void EthernetInterface::showConfiguration() {
-	Serial.print("Ethernet Shield: ");
-	Serial.print("MAC: ");
+	DEBUG_INTERFACE.print("Ethernet Shield: ");
+	DEBUG_INTERFACE.print("MAC: ");
 	for(int i = 0; i < 5; i++){
-		Serial.print(mac[i], HEX);
-		Serial.print(":");
+		DEBUG_INTERFACE.print(mac[i], HEX);
+		DEBUG_INTERFACE.print(":");
 	}
-	Serial.print(mac[5], HEX);
-	Serial.print(" - IP: ");
-	Serial.print(Ethernet.localIP());
-	Serial.print(" - PORT: ");
-	Serial.println(ETHERNET_PORT);
+	DEBUG_INTERFACE.print(mac[5], HEX);
+	DEBUG_INTERFACE.print(" - IP: ");
+	DEBUG_INTERFACE.print(Ethernet.localIP());
+	DEBUG_INTERFACE.print(" - PORT: ");
+	DEBUG_INTERFACE.println(ETHERNET_PORT);
 }
 
 void EthernetInterface::showInitInfo() {

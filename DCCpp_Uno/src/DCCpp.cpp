@@ -248,7 +248,7 @@ void setup(){
 #endif
 
 #if COMM_INTERFACE != 4 || (COMM_INTERFACE == 4 && !defined(USE_SERIAL_FOR_WIFI))
-  CommManager::registerInterface(new HardwareSerialInterface(Serial));
+  CommManager::registerInterface(new HardwareSerialInterface(COMM_SERIAL_PORT, COMM_BAUD_RATE));
 #endif
 #if COMM_INTERFACE >= 1 && COMM_INTERFACE <= 3
   CommManager::registerInterface(new EthernetInterface());
@@ -266,8 +266,13 @@ void setup(){
 
   pinMode(A5,INPUT);                                       // if pin A5 is grounded upon start-up, print system configuration and halt
   digitalWrite(A5,HIGH);
-  if(!digitalRead(A5))
+  Serial.begin(9600);
+  showConfiguration();
+  if(!digitalRead(A5)) {
     showConfiguration();
+    DEBUG_INTERFACE.print("\n\nPROGRAM HALTED - PLEASE RESTART ARDUINO");
+    while(true);
+  }
 
   CommManager::printf("<iDCC++ BASE STATION FOR ARDUINO %s / %s: V-%s / %s %s>", ARDUINO_TYPE, MOTOR_SHIELD_NAME, VERSION, __DATE__, __TIME__);
 
@@ -485,50 +490,48 @@ ISR(TIMER3_COMPB_vect){              // set interrupt service for OCR3B of TIMER
 // - ACTIVATED ON STARTUP IF SHOW_CONFIG_PIN IS TIED HIGH
 
 void showConfiguration(){
-  Serial.print("\n*** DCC++ CONFIGURATION ***\n");
+  DEBUG_INTERFACE.print("\n*** DCC++ CONFIGURATION ***\n");
 
-  Serial.print("\nVERSION:      ");
-  Serial.print(VERSION);
-  Serial.print("\nCOMPILED:     ");
-  Serial.print(__DATE__);
-  Serial.print(" ");
-  Serial.print(__TIME__);
+  DEBUG_INTERFACE.print("\nVERSION:      ");
+  DEBUG_INTERFACE.print(VERSION);
+  DEBUG_INTERFACE.print("\nCOMPILED:     ");
+  DEBUG_INTERFACE.print(__DATE__);
+  DEBUG_INTERFACE.print(" ");
+  DEBUG_INTERFACE.print(__TIME__);
 
-  Serial.print("\nARDUINO:      ");
-  Serial.print(ARDUINO_TYPE);
+  DEBUG_INTERFACE.print("\nARDUINO:      ");
+  DEBUG_INTERFACE.print(ARDUINO_TYPE);
 
-  Serial.print("\n\nMOTOR SHIELD: ");
-  Serial.print(MOTOR_SHIELD_NAME);
+  DEBUG_INTERFACE.print("\n\nMOTOR SHIELD: ");
+  DEBUG_INTERFACE.print(MOTOR_SHIELD_NAME);
 
-  Serial.print("\n\nDCC SIG MAIN: ");
-  Serial.print(DCC_SIGNAL_PIN_MAIN);
-  Serial.print("\n   DIRECTION: ");
-  Serial.print(DIRECTION_MOTOR_CHANNEL_PIN_A);
-  Serial.print("\n      ENABLE: ");
-  Serial.print(SIGNAL_ENABLE_PIN_MAIN);
-  Serial.print("\n     CURRENT: ");
-  Serial.print(CURRENT_MONITOR_PIN_MAIN);
+  DEBUG_INTERFACE.print("\n\nDCC SIG MAIN: ");
+  DEBUG_INTERFACE.print(DCC_SIGNAL_PIN_MAIN);
+  DEBUG_INTERFACE.print("\n   DIRECTION: ");
+  DEBUG_INTERFACE.print(DIRECTION_MOTOR_CHANNEL_PIN_A);
+  DEBUG_INTERFACE.print("\n      ENABLE: ");
+  DEBUG_INTERFACE.print(SIGNAL_ENABLE_PIN_MAIN);
+  DEBUG_INTERFACE.print("\n     CURRENT: ");
+  DEBUG_INTERFACE.print(CURRENT_MONITOR_PIN_MAIN);
 
-  Serial.print("\n\nDCC SIG PROG: ");
-  Serial.print(DCC_SIGNAL_PIN_PROG);
-  Serial.print("\n   DIRECTION: ");
-  Serial.print(DIRECTION_MOTOR_CHANNEL_PIN_B);
-  Serial.print("\n      ENABLE: ");
-  Serial.print(SIGNAL_ENABLE_PIN_PROG);
-  Serial.print("\n     CURRENT: ");
-  Serial.print(CURRENT_MONITOR_PIN_PROG);
+  DEBUG_INTERFACE.print("\n\nDCC SIG PROG: ");
+  DEBUG_INTERFACE.print(DCC_SIGNAL_PIN_PROG);
+  DEBUG_INTERFACE.print("\n   DIRECTION: ");
+  DEBUG_INTERFACE.print(DIRECTION_MOTOR_CHANNEL_PIN_B);
+  DEBUG_INTERFACE.print("\n      ENABLE: ");
+  DEBUG_INTERFACE.print(SIGNAL_ENABLE_PIN_PROG);
+  DEBUG_INTERFACE.print("\n     CURRENT: ");
+  DEBUG_INTERFACE.print(CURRENT_MONITOR_PIN_PROG);
 
-  Serial.print("\n\nNUM TURNOUTS: ");
-  Serial.print(EEStore::eeStore->data.nTurnouts);
-  Serial.print("\n     SENSORS: ");
-  Serial.print(EEStore::eeStore->data.nSensors);
-  Serial.print("\n     OUTPUTS: ");
-  Serial.print(EEStore::eeStore->data.nOutputs);
+  DEBUG_INTERFACE.print("\n\nNUM TURNOUTS: ");
+  DEBUG_INTERFACE.print(EEStore::eeStore->data.nTurnouts);
+  DEBUG_INTERFACE.print("\n     SENSORS: ");
+  DEBUG_INTERFACE.print(EEStore::eeStore->data.nSensors);
+  DEBUG_INTERFACE.print("\n     OUTPUTS: ");
+  DEBUG_INTERFACE.print(EEStore::eeStore->data.nOutputs);
 
-  Serial.print("\n\nINTERFACE(s):\n");
+  DEBUG_INTERFACE.print("\n\nINTERFACE(s):\n");
   CommManager::showConfiguration();
-  Serial.print("\n\nPROGRAM HALTED - PLEASE RESTART ARDUINO");
-  while(true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

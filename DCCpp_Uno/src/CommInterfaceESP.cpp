@@ -6,6 +6,7 @@
  */
 
 #include <Arduino.h>
+
 #include "CommInterfaceESP.h"
 #include "SerialCommand.h"
 #include "DCCpp.h"
@@ -53,14 +54,14 @@ void ESPInterface::init(IPAddress *ip) {
 			// connected to AP, parse the IP address out
 			String ipString = espStatus.substring(
 					espStatus.lastIndexOf(' ') + 1, espStatus.length());
-			//Serial.println("IP: " + ipString);
+			//DEBUG_INTERFACE.println("IP: " + ipString);
 			_localAddress.fromString(ipString);
 		} else if (espStatus.indexOf("connect failed") > 0
 				|| espStatus.indexOf("not found") > 0
 				|| espStatus.indexOf("timeout") > 0) {
 			// connection failed.  Abort.
-			Serial.println("<iDCC++ Unable to connect to WiFi, Halting>");
-			Serial.println(espStatus);
+			DEBUG_INTERFACE.println("<iDCC++ Unable to connect to WiFi, Halting>");
+			DEBUG_INTERFACE.println(espStatus);
 			// don't continue
 			while (true)
 				;
@@ -96,9 +97,9 @@ void ESPInterface::process() {
 }
 
 void ESPInterface::showConfiguration() {
-	Serial.print(" - IP: ");
-	Serial.print(_localAddress);
-	Serial.println(" (DHCP)");
+	DEBUG_INTERFACE.print(" - IP: ");
+	DEBUG_INTERFACE.print(_localAddress);
+	DEBUG_INTERFACE.println(" (DHCP)");
 }
 
 void ESPInterface::showInitInfo() {
@@ -113,8 +114,8 @@ ESPHardwareSerialInterface::ESPHardwareSerialInterface(HardwareSerial &serial, l
 }
 
 void ESPHardwareSerialInterface::showConfiguration() {
-	Serial.print("ESP - HardwareSerial - Speed:");
-	Serial.print(_baud);
+	DEBUG_INTERFACE.print("ESP - HardwareSerial - Speed:");
+	DEBUG_INTERFACE.print(_baud);
 	ESPInterface::showConfiguration();
 }
 
@@ -128,12 +129,12 @@ ESPSoftwareSerialInterface::ESPSoftwareSerialInterface(int rxPin, int txPin, lon
 }
 
 void ESPSoftwareSerialInterface::showConfiguration() {
-	Serial.print("ESP - SoftwareSerial - Speed:");
-	Serial.print(_baud);
-	Serial.print(" - RX: ");
-	Serial.print(_rxPin);
-	Serial.print(" - TX: ");
-	Serial.print(_txPin);
+	DEBUG_INTERFACE.print("ESP - SoftwareSerial - Speed:");
+	DEBUG_INTERFACE.print(_baud);
+	DEBUG_INTERFACE.print(" - RX: ");
+	DEBUG_INTERFACE.print(_rxPin);
+	DEBUG_INTERFACE.print(" - TX: ");
+	DEBUG_INTERFACE.print(_txPin);
 	ESPInterface::showConfiguration();
 }
 
